@@ -6,8 +6,6 @@ This is a fallback when the C++ module is not available.
 
 from dataclasses import dataclass, field
 from enum import Enum, auto
-from typing import List, Optional, Dict, Any
-import math
 
 
 class NodeStatus(Enum):
@@ -56,8 +54,8 @@ class BranchingDecision:
     upper_bound: float = float("inf")
 
     # Custom
-    custom_int_data: List[int] = field(default_factory=list)
-    custom_float_data: List[float] = field(default_factory=list)
+    custom_int_data: list[int] = field(default_factory=list)
+    custom_float_data: list[float] = field(default_factory=list)
 
     @staticmethod
     def variable_branch(var_idx: int, value: float, upper: bool) -> "BranchingDecision":
@@ -114,12 +112,12 @@ class BPNode:
     status: NodeStatus = NodeStatus.PENDING
     is_integer: bool = False
 
-    inherited_decisions: List[BranchingDecision] = field(default_factory=list)
-    local_decisions: List[BranchingDecision] = field(default_factory=list)
-    children: List[int] = field(default_factory=list)
+    inherited_decisions: list[BranchingDecision] = field(default_factory=list)
+    local_decisions: list[BranchingDecision] = field(default_factory=list)
+    children: list[int] = field(default_factory=list)
 
-    solution: List[float] = field(default_factory=list)
-    solution_columns: List[int] = field(default_factory=list)
+    solution: list[float] = field(default_factory=list)
+    solution_columns: list[int] = field(default_factory=list)
 
     @property
     def gap(self) -> float:
@@ -164,7 +162,7 @@ class BPNode:
         """Total number of branching decisions."""
         return len(self.inherited_decisions) + len(self.local_decisions)
 
-    def all_decisions(self) -> List[BranchingDecision]:
+    def all_decisions(self) -> list[BranchingDecision]:
         """Get all branching decisions."""
         return self.inherited_decisions + self.local_decisions
 
@@ -183,14 +181,14 @@ class BPNode:
             return True
         return False
 
-    def set_solution(self, sol: List[float]) -> None:
+    def set_solution(self, sol: list[float]) -> None:
         """Set the solution vector."""
         self.solution = sol
 
-    def set_solution_columns(self, cols: List[int]) -> None:
+    def set_solution_columns(self, cols: list[int]) -> None:
         """Set the solution columns."""
         self.solution_columns = cols
 
-    def set_inherited_decisions(self, decisions: List[BranchingDecision]) -> None:
+    def set_inherited_decisions(self, decisions: list[BranchingDecision]) -> None:
         """Set inherited decisions."""
         self.inherited_decisions = decisions

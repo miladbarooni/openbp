@@ -11,12 +11,12 @@ This solver works with any problem built using OpenCG's Problem class.
 """
 
 from dataclasses import dataclass
-from typing import Optional, Any
+from typing import Any, Optional
 
-from openbp.solver import BranchAndPrice, BPConfig, BPSolution
 from openbp.branching import RyanFosterBranching, VariableBranching
 from openbp.branching.base import CompositeBranchingStrategy
 from openbp.selection import BestFirstSelection, HybridSelection
+from openbp.solver import BPConfig, BPSolution, BranchAndPrice
 
 
 @dataclass

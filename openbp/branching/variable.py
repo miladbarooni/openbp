@@ -5,16 +5,15 @@ Standard branching on fractional LP variable values.
 Creates two children: x[j] <= floor(val) and x[j] >= ceil(val).
 """
 
-from typing import List, Dict, Optional
 from dataclasses import dataclass
 
-from openbp.branching.base import BranchingStrategy, BranchingCandidate
+from openbp.branching.base import BranchingCandidate, BranchingStrategy
 
 # Import from C++ core if available, otherwise from pure Python
 try:
     from openbp._core import BranchingDecision, BranchType
 except ImportError:
-    from openbp.core.node import BranchingDecision, BranchType
+    from openbp.core.node import BranchingDecision
 
 
 @dataclass
@@ -69,9 +68,9 @@ class VariableBranching(BranchingStrategy):
         self,
         node,  # BPNode
         columns,  # List[Column]
-        column_values: List[float],
-        duals: Dict[int, float],
-    ) -> List[BranchingCandidate]:
+        column_values: list[float],
+        duals: dict[int, float],
+    ) -> list[BranchingCandidate]:
         """
         Find fractional variables and create branching candidates.
 

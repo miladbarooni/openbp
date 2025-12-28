@@ -7,19 +7,19 @@ The C++ versions should be preferred for performance.
 
 from openbp.core.node import (
     BPNode,
-    NodeStatus,
-    BranchType,
     BranchingDecision,
+    BranchType,
+    NodeStatus,
 )
-from openbp.core.tree import BPTree, TreeStats
 from openbp.core.selection import (
-    NodeSelector,
+    BestEstimateSelector,
     BestFirstSelector,
     DepthFirstSelector,
-    BestEstimateSelector,
     HybridSelector,
+    NodeSelector,
     create_selector,
 )
+from openbp.core.tree import BPTree, TreeStats
 
 __all__ = [
     "BPNode",

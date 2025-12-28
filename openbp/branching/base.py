@@ -6,11 +6,12 @@ This module defines the interface that all branching strategies must implement.
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import List, Optional, Tuple, Dict, Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Optional
 
 if TYPE_CHECKING:
-    from openbp._core import BPNode, BranchingDecision
     from opencg import Column
+
+    from openbp._core import BPNode, BranchingDecision
 
 
 @dataclass
@@ -28,9 +29,9 @@ class BranchingCandidate:
         metadata: Additional strategy-specific information
     """
     score: float
-    decisions: List["BranchingDecision"]
+    decisions: list["BranchingDecision"]
     description: str = ""
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def __lt__(self, other: "BranchingCandidate") -> bool:
         """Higher score = higher priority."""
@@ -70,10 +71,10 @@ class BranchingStrategy(ABC):
     def select_branching_candidates(
         self,
         node: "BPNode",
-        columns: List["Column"],
-        column_values: List[float],
-        duals: Dict[int, float],
-    ) -> List[BranchingCandidate]:
+        columns: list["Column"],
+        column_values: list[float],
+        duals: dict[int, float],
+    ) -> list[BranchingCandidate]:
         """
         Find branching candidates for a node.
 
@@ -95,9 +96,9 @@ class BranchingStrategy(ABC):
     def select_best_candidate(
         self,
         node: "BPNode",
-        columns: List["Column"],
-        column_values: List[float],
-        duals: Dict[int, float],
+        columns: list["Column"],
+        column_values: list[float],
+        duals: dict[int, float],
     ) -> Optional[BranchingCandidate]:
         """
         Select the best branching candidate.
@@ -122,9 +123,9 @@ class BranchingStrategy(ABC):
 
     def filter_columns(
         self,
-        columns: List["Column"],
-        decisions: List["BranchingDecision"],
-    ) -> List["Column"]:
+        columns: list["Column"],
+        decisions: list["BranchingDecision"],
+    ) -> list["Column"]:
         """
         Filter columns that violate branching decisions.
 
@@ -146,8 +147,8 @@ class BranchingStrategy(ABC):
     def is_applicable(
         self,
         node: "BPNode",
-        columns: List["Column"],
-        column_values: List[float],
+        columns: list["Column"],
+        column_values: list[float],
     ) -> bool:
         """
         Check if this strategy can be applied to a node.
@@ -188,7 +189,7 @@ class CompositeBranchingStrategy(BranchingStrategy):
     with generic fallbacks (e.g., variable branching).
     """
 
-    def __init__(self, strategies: List[BranchingStrategy]):
+    def __init__(self, strategies: list[BranchingStrategy]):
         """
         Initialize with a list of strategies.
 
@@ -201,10 +202,10 @@ class CompositeBranchingStrategy(BranchingStrategy):
     def select_branching_candidates(
         self,
         node: "BPNode",
-        columns: List["Column"],
-        column_values: List[float],
-        duals: Dict[int, float],
-    ) -> List[BranchingCandidate]:
+        columns: list["Column"],
+        column_values: list[float],
+        duals: dict[int, float],
+    ) -> list[BranchingCandidate]:
         """Try each strategy until one succeeds."""
         for strategy in self.strategies:
             if not strategy.is_applicable(node, columns, column_values):
@@ -220,9 +221,9 @@ class CompositeBranchingStrategy(BranchingStrategy):
 
     def filter_columns(
         self,
-        columns: List["Column"],
-        decisions: List["BranchingDecision"],
-    ) -> List["Column"]:
+        columns: list["Column"],
+        decisions: list["BranchingDecision"],
+    ) -> list["Column"]:
         """Apply all strategies' filters."""
         result = columns
         for strategy in self.strategies:

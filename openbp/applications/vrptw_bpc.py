@@ -12,12 +12,12 @@ For VRPTW, we use:
 - Cuts: Rounded Capacity Cuts on customer subsets
 """
 
-from dataclasses import dataclass, field
-from typing import Optional, List, Any, Dict, Tuple, Set, FrozenSet
-import time
 import math
+import time
 from collections import defaultdict
+from dataclasses import dataclass
 from itertools import combinations
+from typing import Any, Optional
 
 from openbp.solver import BPSolution, BPStatus
 
@@ -25,7 +25,7 @@ from openbp.solver import BPSolution, BPStatus
 @dataclass
 class CapacityCut:
     """A rounded capacity cut on a subset of customers."""
-    customers: FrozenSet[int]  # Subset S of customers
+    customers: frozenset[int]  # Subset S of customers
     rhs: int  # ceil(total_demand(S) / vehicle_capacity)
 
     def __repr__(self):
@@ -107,12 +107,12 @@ def solve_vrptw_bpc(
 
     # Track best solution
     best_objective = float('inf')
-    best_routes: List[List[int]] = []
+    best_routes: list[list[int]] = []
     global_lower_bound = 0.0
 
     # First, run column generation to get a pool of columns
     if config.verbose:
-        print(f"VRPTW Branch-Price-and-Cut Solver")
+        print("VRPTW Branch-Price-and-Cut Solver")
         print(f"  Customers: {instance.num_customers}")
         print(f"  Vehicle capacity: {instance.vehicle_capacity}")
         print(f"  Min vehicles (capacity): {lower_bound_vehicles}")
@@ -128,10 +128,10 @@ def solve_vrptw_bpc(
         print()
 
     # Global cuts (added at root, propagate to all nodes)
-    global_cuts: List[CapacityCut] = []
+    global_cuts: list[CapacityCut] = []
 
     # Node queue: (lower_bound, node_id, depth, rf_decisions, local_cuts)
-    node_queue: List[Tuple[float, int, int, List[RyanFosterDecision], List[CapacityCut]]] = []
+    node_queue: list[tuple[float, int, int, list[RyanFosterDecision], list[CapacityCut]]] = []
     next_node_id = 0
 
     # Add root node (no branching decisions, no local cuts)
@@ -309,7 +309,7 @@ def solve_vrptw_bpc(
 
     if config.verbose:
         print()
-        print(f"BPC Complete:")
+        print("BPC Complete:")
         print(f"  Status: {status.name}")
         print(f"  Objective: {best_objective:.2f}")
         print(f"  Lower bound: {final_lb:.2f}")
@@ -326,24 +326,23 @@ def _collect_all_routes_from_cg(
     instance,
     max_iterations: int,
     verbose: bool,
-) -> List[List[int]]:
+) -> list[list[int]]:
     """Run column generation and collect ALL generated routes."""
     try:
         import highspy
     except ImportError:
         raise ImportError("HiGHS is required. Install with: pip install highspy")
 
-    from opencg.master import HiGHSMasterProblem
-    from opencg.pricing import PricingConfig, AcceleratedLabelingAlgorithm
-    from opencg.core.column import Column
-    from opencg.core.problem import Problem, CoverConstraint, CoverType, ObjectiveSense
     from opencg.applications.vrp.network_builder import build_vrptw_network
     from opencg.applications.vrp.resources import CapacityResource, TimeResource
     from opencg.applications.vrp.solver import (
-        _generate_greedy_routes_vrptw,
-        _route_cost_vrptw,
         _create_column_from_route_vrptw,
+        _generate_greedy_routes_vrptw,
     )
+    from opencg.core.column import Column
+    from opencg.core.problem import CoverConstraint, CoverType, ObjectiveSense, Problem
+    from opencg.master import HiGHSMasterProblem
+    from opencg.pricing import AcceleratedLabelingAlgorithm, PricingConfig
 
     network, customer_node_map = build_vrptw_network(instance)
 
@@ -373,10 +372,10 @@ def _collect_all_routes_from_cg(
 
     master = HiGHSMasterProblem(problem, verbosity=0)
 
-    all_routes: List[List[int]] = []
-    route_set: Set[Tuple[int, ...]] = set()
+    all_routes: list[list[int]] = []
+    route_set: set[tuple[int, ...]] = set()
 
-    def add_route(route: List[int]):
+    def add_route(route: list[int]):
         key = tuple(route)
         if key not in route_set:
             route_set.add(key)
@@ -452,8 +451,8 @@ def _collect_all_routes_from_cg(
 
 
 def _route_satisfies_rf_decisions(
-    route: List[int],
-    decisions: List[RyanFosterDecision]
+    route: list[int],
+    decisions: list[RyanFosterDecision]
 ) -> bool:
     """Check if a route satisfies all Ryan-Foster decisions."""
     route_set = set(route)
@@ -472,7 +471,7 @@ def _route_satisfies_rf_decisions(
     return True
 
 
-def _route_covers_subset(route: List[int], subset: FrozenSet[int]) -> bool:
+def _route_covers_subset(route: list[int], subset: frozenset[int]) -> bool:
     """Check if route covers any customer in subset."""
     route_set = set(route)
     return bool(route_set & subset)
@@ -480,11 +479,11 @@ def _route_covers_subset(route: List[int], subset: FrozenSet[int]) -> bool:
 
 def _solve_restricted_master_lp_with_cuts(
     instance,
-    all_routes: List[List[int]],
-    rf_decisions: List[RyanFosterDecision],
-    cuts: List[CapacityCut],
+    all_routes: list[list[int]],
+    rf_decisions: list[RyanFosterDecision],
+    cuts: list[CapacityCut],
     verbose: bool,
-) -> Optional[Tuple[float, List[List[int]], List[float]]]:
+) -> Optional[tuple[float, list[list[int]], list[float]]]:
     """
     Solve restricted master LP with Ryan-Foster constraints and capacity cuts.
     """
@@ -503,7 +502,7 @@ def _solve_restricted_master_lp_with_cuts(
 
     n_customers = instance.num_customers
     n_routes = len(valid_routes)
-    n_cuts = len(cuts)
+    len(cuts)
 
     # Create HiGHS model
     highs = highspy.Highs()
@@ -559,13 +558,13 @@ def _solve_restricted_master_lp_with_cuts(
 
 def _find_violated_capacity_cuts(
     instance,
-    routes: List[List[int]],
-    route_values: List[float],
-    existing_cuts: List[CapacityCut],
+    routes: list[list[int]],
+    route_values: list[float],
+    existing_cuts: list[CapacityCut],
     max_cuts: int,
     min_violation: float,
     max_subset_size: int,
-) -> List[CapacityCut]:
+) -> list[CapacityCut]:
     """
     Find violated rounded capacity cuts.
 
@@ -581,7 +580,7 @@ def _find_violated_capacity_cuts(
     capacity = instance.vehicle_capacity
 
     # Compute route coverage for each customer
-    customer_coverage: Dict[int, float] = defaultdict(float)
+    customer_coverage: dict[int, float] = defaultdict(float)
     for route, val in zip(routes, route_values):
         if val < 1e-9:
             continue
@@ -650,13 +649,13 @@ def _find_violated_capacity_cuts(
 
 
 def _find_ryan_foster_pair(
-    routes: List[List[int]],
-    route_values: List[float],
-    existing_decisions: List[RyanFosterDecision],
-) -> Optional[Tuple[int, int, float]]:
+    routes: list[list[int]],
+    route_values: list[float],
+    existing_decisions: list[RyanFosterDecision],
+) -> Optional[tuple[int, int, float]]:
     """Find the best item pair for Ryan-Foster branching."""
-    pair_together: Dict[Tuple[int, int], float] = defaultdict(float)
-    all_items: Set[int] = set()
+    pair_together: dict[tuple[int, int], float] = defaultdict(float)
+    all_items: set[int] = set()
 
     for route, val in zip(routes, route_values):
         if val < 1e-9:
@@ -669,7 +668,7 @@ def _find_ryan_foster_pair(
                 pair = (min(route[i], route[j]), max(route[i], route[j]))
                 pair_together[pair] += val
 
-    constrained_pairs: Set[Tuple[int, int]] = set()
+    constrained_pairs: set[tuple[int, int]] = set()
     for decision in existing_decisions:
         pair = (min(decision.item_i, decision.item_j),
                 max(decision.item_i, decision.item_j))

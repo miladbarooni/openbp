@@ -7,15 +7,15 @@ This provides better variable selection at the cost of more
 LP solves per node.
 """
 
-from typing import List, Dict, Optional, Callable, Any
 from dataclasses import dataclass
+from typing import Any, Callable, Optional
 
-from openbp.branching.base import BranchingStrategy, BranchingCandidate
+from openbp.branching.base import BranchingCandidate, BranchingStrategy
 
 try:
     from openbp._core import BranchingDecision
 except ImportError:
-    from openbp.core.node import BranchingDecision
+    pass
 
 
 @dataclass
@@ -60,7 +60,7 @@ class StrongBranching(BranchingStrategy):
     def __init__(
         self,
         base_strategy: BranchingStrategy,
-        lp_solver: Optional[Callable[[List[Any]], float]] = None,
+        lp_solver: Optional[Callable[[list[Any]], float]] = None,
         max_candidates: int = 5,
         max_lp_iterations: int = 100,
         alpha: float = 0.5,
@@ -93,16 +93,16 @@ class StrongBranching(BranchingStrategy):
 
         # Pseudo-cost tracking for reliability branching
         # Maps variable index -> (sum_improvement, count)
-        self._pseudo_costs_up: Dict[int, tuple] = {}
-        self._pseudo_costs_down: Dict[int, tuple] = {}
+        self._pseudo_costs_up: dict[int, tuple] = {}
+        self._pseudo_costs_down: dict[int, tuple] = {}
 
     def select_branching_candidates(
         self,
         node,  # BPNode
         columns,  # List[Column]
-        column_values: List[float],
-        duals: Dict[int, float],
-    ) -> List[BranchingCandidate]:
+        column_values: list[float],
+        duals: dict[int, float],
+    ) -> list[BranchingCandidate]:
         """
         Select candidates using strong branching.
 
@@ -267,11 +267,11 @@ class StrongBranching(BranchingStrategy):
         self,
         node,  # BPNode
         columns,  # List[Column]
-        column_values: List[float],
+        column_values: list[float],
     ) -> bool:
         """Delegate to base strategy."""
         return self.base_strategy.is_applicable(node, columns, column_values)
 
-    def set_lp_solver(self, solver: Callable[[List[Any]], float]) -> None:
+    def set_lp_solver(self, solver: Callable[[list[Any]], float]) -> None:
         """Set the LP solver function."""
         self.lp_solver = solver

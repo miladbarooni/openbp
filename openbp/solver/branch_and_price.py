@@ -5,30 +5,30 @@ This module provides the main BranchAndPrice solver that orchestrates
 tree management, node selection, branching, and column generation.
 """
 
+import math
+import time
 from dataclasses import dataclass, field
 from enum import Enum, auto
-from typing import List, Optional, Dict, Any, Callable, Type, TYPE_CHECKING
-import time
-import math
+from typing import Any, Callable, Optional
 
 # Try to import from C++ core, fall back to Python
 try:
     from openbp._core import (
-        BPTree,
-        BPNode,
-        NodeStatus,
-        BranchingDecision,
         BestFirstSelector,
+        BPNode,
+        BPTree,
+        BranchingDecision,
+        NodeStatus,
         create_selector,
     )
     HAS_CPP_BACKEND = True
 except ImportError:
+    from openbp.core.node import BPNode, BranchingDecision, NodeStatus
+    from openbp.core.selection import create_selector
     from openbp.core.tree import BPTree
-    from openbp.core.node import BPNode, NodeStatus, BranchingDecision
-    from openbp.core.selection import BestFirstSelector, create_selector
     HAS_CPP_BACKEND = False
 
-from openbp.branching.base import BranchingStrategy, BranchingCandidate
+from openbp.branching.base import BranchingStrategy
 from openbp.branching.variable import VariableBranching
 
 
@@ -81,8 +81,8 @@ class BPSolution:
     status: BPStatus
     objective: float = float("inf")
     gap: float = float("inf")
-    columns: List[Any] = field(default_factory=list)  # List[Column]
-    column_values: List[float] = field(default_factory=list)
+    columns: list[Any] = field(default_factory=list)  # List[Column]
+    column_values: list[float] = field(default_factory=list)
 
     # Statistics
     nodes_explored: int = 0
@@ -136,8 +136,8 @@ class BranchAndPrice:
         problem: Any,  # opencg.Problem
         branching_strategy: Optional[BranchingStrategy] = None,
         node_selection: Optional[Any] = None,  # NodeSelector
-        pricing_class: Optional[Type] = None,  # PricingProblem subclass
-        master_class: Optional[Type] = None,  # MasterProblem subclass
+        pricing_class: Optional[type] = None,  # PricingProblem subclass
+        master_class: Optional[type] = None,  # MasterProblem subclass
         config: Optional[BPConfig] = None,
     ):
         """
@@ -169,7 +169,7 @@ class BranchAndPrice:
 
         # State
         self._tree: Optional[BPTree] = None
-        self._column_pool: List[Any] = []  # Global column pool
+        self._column_pool: list[Any] = []  # Global column pool
         self._solution: Optional[BPSolution] = None
         self._start_time: float = 0.0
         self._cg_time: float = 0.0
@@ -181,9 +181,9 @@ class BranchAndPrice:
     def _import_opencg(self) -> None:
         """Import OpenCG components."""
         try:
-            from opencg import ColumnGeneration, CGConfig
+            from opencg import CGConfig, ColumnGeneration
             from opencg.master import HiGHSMasterProblem
-            from opencg.pricing import create_labeling_algorithm, PricingConfig
+            from opencg.pricing import PricingConfig, create_labeling_algorithm
 
             self._ColumnGeneration = ColumnGeneration
             self._CGConfig = CGConfig
@@ -347,7 +347,7 @@ class BranchAndPrice:
     def _solve_cg_at_node(
         self,
         node: BPNode,
-        decisions: List[BranchingDecision],
+        decisions: list[BranchingDecision],
     ) -> Optional[tuple]:
         """
         Solve column generation at a node.
@@ -420,7 +420,7 @@ class BranchAndPrice:
         self,
         master: Any,
         pricing: Any,
-        decisions: List[BranchingDecision],
+        decisions: list[BranchingDecision],
     ) -> None:
         """
         Apply branching decisions to master and pricing.
@@ -439,7 +439,7 @@ class BranchAndPrice:
 
     def _is_integer_solution(
         self,
-        column_values: List[float],
+        column_values: list[float],
         tolerance: float = 1e-6,
     ) -> bool:
         """Check if solution values are integral."""
@@ -523,7 +523,7 @@ class BranchAndPrice:
         return self._tree
 
     @property
-    def column_pool(self) -> List[Any]:
+    def column_pool(self) -> list[Any]:
         """Get the global column pool."""
         return self._column_pool
 

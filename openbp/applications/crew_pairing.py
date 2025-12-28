@@ -13,10 +13,10 @@ IMPORTANT: This is a TRUE Branch-and-Price implementation that runs column gener
 at each B&B node to find new columns that respect the branching decisions.
 """
 
-from dataclasses import dataclass, field
-from typing import Optional, List, Any, Dict, Tuple, Set, FrozenSet
 import time
 from collections import defaultdict
+from dataclasses import dataclass
+from typing import Any, Optional
 
 from openbp.solver import BPSolution, BPStatus
 
@@ -88,9 +88,9 @@ def solve_crew_pairing_bp(
             FastPerSourcePricing,
             PerSourcePricing,
         )
+        from opencg.core.column import Column
         from opencg.master import HiGHSMasterProblem
         from opencg.pricing import PricingConfig
-        from opencg.core.column import Column
     except ImportError as e:
         raise ImportError(
             "OpenCG is required. Install with: pip install -e path/to/opencg"
@@ -105,13 +105,13 @@ def solve_crew_pairing_bp(
 
     # Track best solution
     best_objective = float('inf')
-    best_pairings: List[Dict] = []
+    best_pairings: list[dict] = []
     global_lower_bound = 0.0
 
     n_flights = len(problem.cover_constraints)
 
     if config.verbose:
-        print(f"Crew Pairing B&P Solver (True Branch-and-Price)")
+        print("Crew Pairing B&P Solver (True Branch-and-Price)")
         print(f"  Flights: {n_flights}")
         print(f"  Network nodes: {problem.network.num_nodes}")
         print(f"  Network arcs: {problem.network.num_arcs}")
@@ -125,10 +125,10 @@ def solve_crew_pairing_bp(
         use_fast = False
 
     # Global pairing pool - accumulates all generated pairings
-    all_pairings: List[Dict] = []
-    pairing_set: Set[FrozenSet[int]] = set()
+    all_pairings: list[dict] = []
+    pairing_set: set[frozenset[int]] = set()
 
-    def add_pairing(cost: float, flights: Set[int], arc_indices: Tuple[int, ...]) -> bool:
+    def add_pairing(cost: float, flights: set[int], arc_indices: tuple[int, ...]) -> bool:
         """Add pairing to pool if not already present. Returns True if added."""
         key = frozenset(flights)
         if key not in pairing_set:
@@ -172,7 +172,7 @@ def solve_crew_pairing_bp(
         print("Pricing algorithm initialized")
 
     # Node queue: (lower_bound, node_id, depth, rf_decisions)
-    node_queue: List[Tuple[float, int, int, List[RyanFosterDecision]]] = []
+    node_queue: list[tuple[float, int, int, list[RyanFosterDecision]]] = []
     next_node_id = 0
 
     # Add root node (no branching decisions)
@@ -331,7 +331,7 @@ def solve_crew_pairing_bp(
 
     if config.verbose:
         print()
-        print(f"B&P Complete:")
+        print("B&P Complete:")
         print(f"  Status: {status.name}")
         print(f"  Objective: {best_objective:.2f}")
         print(f"  Lower bound: {final_lb:.2f}")
@@ -349,12 +349,12 @@ def _solve_node_with_cg(
     problem,
     n_flights: int,
     pricing,
-    all_pairings: List[Dict],
+    all_pairings: list[dict],
     add_pairing_fn,
-    rf_decisions: List[RyanFosterDecision],
+    rf_decisions: list[RyanFosterDecision],
     max_cg_iterations: int,
     verbose: bool,
-) -> Optional[Tuple[float, List[Dict], List[float]]]:
+) -> Optional[tuple[float, list[dict], list[float]]]:
     """
     Solve a B&B node with column generation.
 
@@ -369,8 +369,8 @@ def _solve_node_with_cg(
     except ImportError:
         raise ImportError("HiGHS is required. Install with: pip install highspy")
 
-    from opencg.master import HiGHSMasterProblem
     from opencg.core.column import Column
+    from opencg.master import HiGHSMasterProblem
 
     # Create master problem for this node
     master = HiGHSMasterProblem(problem, verbosity=0)
@@ -476,8 +476,8 @@ def _solve_node_with_cg(
 
 
 def _pairing_satisfies_rf_decisions(
-    flights: Set[int],
-    decisions: List[RyanFosterDecision]
+    flights: set[int],
+    decisions: list[RyanFosterDecision]
 ) -> bool:
     """Check if a pairing satisfies all Ryan-Foster decisions."""
     for decision in decisions:
@@ -497,10 +497,10 @@ def _pairing_satisfies_rf_decisions(
 
 
 def _find_ryan_foster_pair(
-    pairings: List[Dict],
-    pairing_values: List[float],
-    existing_decisions: List[RyanFosterDecision],
-) -> Optional[Tuple[int, int, float]]:
+    pairings: list[dict],
+    pairing_values: list[float],
+    existing_decisions: list[RyanFosterDecision],
+) -> Optional[tuple[int, int, float]]:
     """
     Find the best flight pair for Ryan-Foster branching.
 
@@ -508,8 +508,8 @@ def _find_ryan_foster_pair(
         (flight_i, flight_j, together_value) or None if no valid pair
     """
     # Compute pair overlap values
-    pair_together: Dict[Tuple[int, int], float] = defaultdict(float)
-    all_flights: Set[int] = set()
+    pair_together: dict[tuple[int, int], float] = defaultdict(float)
+    all_flights: set[int] = set()
 
     for pairing, val in zip(pairings, pairing_values):
         if val < 1e-9:
@@ -525,7 +525,7 @@ def _find_ryan_foster_pair(
                 pair_together[pair] += val
 
     # Find pairs that are already constrained
-    constrained_pairs: Set[Tuple[int, int]] = set()
+    constrained_pairs: set[tuple[int, int]] = set()
     for decision in existing_decisions:
         pair = (min(decision.item_i, decision.item_j),
                 max(decision.item_i, decision.item_j))

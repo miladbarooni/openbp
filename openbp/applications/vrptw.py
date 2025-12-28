@@ -13,16 +13,16 @@ IMPORTANT: This is a TRUE Branch-and-Price implementation that runs column gener
 at each B&B node to find new columns that respect the branching decisions.
 """
 
-from dataclasses import dataclass, field
-from typing import Optional, List, Any, Dict, Tuple, Set, FrozenSet
-import time
 import math
+import time
 from collections import defaultdict
+from dataclasses import dataclass
+from typing import Any, Optional
 
 from openbp.solver import BPSolution, BPStatus
 
 
-def _route_key(route: List[int]) -> Tuple[int, ...]:
+def _route_key(route: list[int]) -> tuple[int, ...]:
     """Convert a route to a hashable tuple."""
     return tuple(route)
 
@@ -84,18 +84,23 @@ def solve_vrptw_bp(
 
     # Import OpenCG components
     try:
-        from opencg.applications.vrp import solve_vrptw, VRPTWConfig
-        from opencg.applications.vrp.solver import (
-            _generate_greedy_routes_vrptw,
-            _route_cost_vrptw,
-            _create_column_from_route_vrptw,
-        )
+        from opencg.applications.vrp import VRPTWConfig, solve_vrptw
         from opencg.applications.vrp.network_builder import build_vrptw_network
         from opencg.applications.vrp.resources import CapacityResource, TimeResource
-        from opencg.master import HiGHSMasterProblem
-        from opencg.pricing import PricingConfig, AcceleratedLabelingAlgorithm
+        from opencg.applications.vrp.solver import (
+            _create_column_from_route_vrptw,
+            _generate_greedy_routes_vrptw,
+            _route_cost_vrptw,
+        )
         from opencg.core.column import Column
-        from opencg.core.problem import Problem, CoverConstraint, CoverType, ObjectiveSense
+        from opencg.core.problem import (
+            CoverConstraint,
+            CoverType,
+            ObjectiveSense,
+            Problem,
+        )
+        from opencg.master import HiGHSMasterProblem
+        from opencg.pricing import AcceleratedLabelingAlgorithm, PricingConfig
     except ImportError as e:
         raise ImportError(
             "OpenCG is required. Install with: pip install -e path/to/opencg"
@@ -113,7 +118,7 @@ def solve_vrptw_bp(
 
     # Track best solution
     best_objective = float('inf')
-    best_routes: List[List[int]] = []
+    best_routes: list[list[int]] = []
     global_lower_bound = 0.0
 
     # Build network once (used for pricing at all nodes)
@@ -145,17 +150,17 @@ def solve_vrptw_bp(
     )
 
     if config.verbose:
-        print(f"VRPTW B&P Solver (True Branch-and-Price)")
+        print("VRPTW B&P Solver (True Branch-and-Price)")
         print(f"  Customers: {instance.num_customers}")
         print(f"  Vehicle capacity: {instance.vehicle_capacity}")
         print(f"  Min vehicles (capacity): {lower_bound_vehicles}")
         print()
 
     # Global column pool - accumulates all generated columns
-    all_routes: List[List[int]] = []
-    route_set: Set[Tuple[int, ...]] = set()
+    all_routes: list[list[int]] = []
+    route_set: set[tuple[int, ...]] = set()
 
-    def add_route(route: List[int]) -> bool:
+    def add_route(route: list[int]) -> bool:
         """Add route to pool if not already present. Returns True if added."""
         key = tuple(route)
         if key not in route_set:
@@ -173,7 +178,7 @@ def solve_vrptw_bp(
         print(f"Initial greedy routes: {len(greedy_routes)}")
 
     # Node queue: (lower_bound, node_id, depth, rf_decisions)
-    node_queue: List[Tuple[float, int, int, List[RyanFosterDecision]]] = []
+    node_queue: list[tuple[float, int, int, list[RyanFosterDecision]]] = []
     next_node_id = 0
 
     # Add root node (no branching decisions)
@@ -317,7 +322,7 @@ def solve_vrptw_bp(
 
     if config.verbose:
         print()
-        print(f"B&P Complete:")
+        print("B&P Complete:")
         print(f"  Status: {status.name}")
         print(f"  Objective: {best_objective:.2f}")
         print(f"  Lower bound: {final_lb:.2f}")
@@ -335,12 +340,12 @@ def _solve_node_with_cg(
     problem,
     network,
     customer_node_map,
-    all_routes: List[List[int]],
+    all_routes: list[list[int]],
     add_route_fn,
-    rf_decisions: List[RyanFosterDecision],
+    rf_decisions: list[RyanFosterDecision],
     max_cg_iterations: int,
     verbose: bool,
-) -> Optional[Tuple[float, List[List[int]], List[float]]]:
+) -> Optional[tuple[float, list[list[int]], list[float]]]:
     """
     Solve a B&B node with column generation.
 
@@ -356,9 +361,9 @@ def _solve_node_with_cg(
         raise ImportError("HiGHS is required. Install with: pip install highspy")
 
     from opencg.applications.vrp.solver import _route_cost_vrptw
-    from opencg.pricing import PricingConfig, AcceleratedLabelingAlgorithm
     from opencg.core.column import Column
     from opencg.master import HiGHSMasterProblem
+    from opencg.pricing import AcceleratedLabelingAlgorithm, PricingConfig
 
     n_customers = instance.num_customers
 
@@ -488,8 +493,8 @@ def _solve_node_with_cg(
 
 
 def _route_satisfies_rf_decisions(
-    route: List[int],
-    decisions: List[RyanFosterDecision]
+    route: list[int],
+    decisions: list[RyanFosterDecision]
 ) -> bool:
     """Check if a route satisfies all Ryan-Foster decisions."""
     route_set = set(route)
@@ -511,10 +516,10 @@ def _route_satisfies_rf_decisions(
 
 
 def _find_ryan_foster_pair(
-    routes: List[List[int]],
-    route_values: List[float],
-    existing_decisions: List[RyanFosterDecision],
-) -> Optional[Tuple[int, int, float]]:
+    routes: list[list[int]],
+    route_values: list[float],
+    existing_decisions: list[RyanFosterDecision],
+) -> Optional[tuple[int, int, float]]:
     """
     Find the best item pair for Ryan-Foster branching.
 
@@ -522,8 +527,8 @@ def _find_ryan_foster_pair(
         (item_i, item_j, together_value) or None if no valid pair
     """
     # Compute pair overlap values
-    pair_together: Dict[Tuple[int, int], float] = defaultdict(float)
-    all_items: Set[int] = set()
+    pair_together: dict[tuple[int, int], float] = defaultdict(float)
+    all_items: set[int] = set()
 
     for route, val in zip(routes, route_values):
         if val < 1e-9:
@@ -538,7 +543,7 @@ def _find_ryan_foster_pair(
                 pair_together[pair] += val
 
     # Find pairs that are already constrained
-    constrained_pairs: Set[Tuple[int, int]] = set()
+    constrained_pairs: set[tuple[int, int]] = set()
     for decision in existing_decisions:
         pair = (min(decision.item_i, decision.item_j),
                 max(decision.item_i, decision.item_j))

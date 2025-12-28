@@ -16,21 +16,21 @@ from typing import Optional
 
 try:
     from openbp._core import (
-        NodeSelector,
+        BestEstimateSelector,
         BestFirstSelector,
         DepthFirstSelector,
-        BestEstimateSelector,
         HybridSelector,
+        NodeSelector,
         create_selector,
     )
     HAS_CPP_BACKEND = True
 except ImportError:
     from openbp.core.selection import (
-        NodeSelector,
+        BestEstimateSelector,
         BestFirstSelector,
         DepthFirstSelector,
-        BestEstimateSelector,
         HybridSelector,
+        NodeSelector,
         create_selector,
     )
     HAS_CPP_BACKEND = False

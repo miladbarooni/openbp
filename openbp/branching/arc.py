@@ -10,11 +10,10 @@ This is commonly used for CVRP, crew scheduling, and other problems
 where routes/pairings are represented as paths in a network.
 """
 
-from typing import List, Dict, Set, Tuple
-from dataclasses import dataclass
 from collections import defaultdict
+from dataclasses import dataclass
 
-from openbp.branching.base import BranchingStrategy, BranchingCandidate
+from openbp.branching.base import BranchingCandidate, BranchingStrategy
 
 try:
     from openbp._core import BranchingDecision, BranchType
@@ -79,9 +78,9 @@ class ArcBranching(BranchingStrategy):
         self,
         node,  # BPNode
         columns,  # List[Column]
-        column_values: List[float],
-        duals: Dict[int, float],
-    ) -> List[BranchingCandidate]:
+        column_values: list[float],
+        duals: dict[int, float],
+    ) -> list[BranchingCandidate]:
         """
         Find arcs with fractional usage.
 
@@ -96,7 +95,7 @@ class ArcBranching(BranchingStrategy):
         """
         # Compute arc usage
         # arc_key = (source_node, arc_index) to handle per-source pricing
-        arc_usage: Dict[Tuple[int, int], float] = defaultdict(float)
+        arc_usage: dict[tuple[int, int], float] = defaultdict(float)
 
         for col, val in zip(columns, column_values):
             if val < 1e-9:
@@ -204,7 +203,7 @@ class ArcBranching(BranchingStrategy):
         self,
         node,  # BPNode
         columns,  # List[Column]
-        column_values: List[float],
+        column_values: list[float],
     ) -> bool:
         """
         Check if arc branching can be applied.

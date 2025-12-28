@@ -14,11 +14,10 @@ Reference:
     to Scheduling. Computer Scheduling of Public Transport, 269-280.
 """
 
-from typing import List, Dict, Set, Tuple, FrozenSet
-from dataclasses import dataclass
 from collections import defaultdict
+from dataclasses import dataclass
 
-from openbp.branching.base import BranchingStrategy, BranchingCandidate
+from openbp.branching.base import BranchingCandidate, BranchingStrategy
 
 try:
     from openbp._core import BranchingDecision, BranchType
@@ -86,9 +85,9 @@ class RyanFosterBranching(BranchingStrategy):
         self,
         node,  # BPNode
         columns,  # List[Column]
-        column_values: List[float],
-        duals: Dict[int, float],
-    ) -> List[BranchingCandidate]:
+        column_values: list[float],
+        duals: dict[int, float],
+    ) -> list[BranchingCandidate]:
         """
         Find item pairs with fractional overlap.
 
@@ -102,9 +101,9 @@ class RyanFosterBranching(BranchingStrategy):
             List of branching candidates sorted by score
         """
         # Compute pair overlap values
-        pair_together: Dict[Tuple[int, int], float] = defaultdict(float)
-        pair_apart: Dict[Tuple[int, int], float] = defaultdict(float)
-        all_items: Set[int] = set()
+        pair_together: dict[tuple[int, int], float] = defaultdict(float)
+        pair_apart: dict[tuple[int, int], float] = defaultdict(float)
+        all_items: set[int] = set()
 
         for col, val in zip(columns, column_values):
             if val < 1e-9:
@@ -121,7 +120,7 @@ class RyanFosterBranching(BranchingStrategy):
 
         # For "apart", we need items that appear separately
         # Item i appears in column c but j doesn't
-        item_to_columns: Dict[int, List[Tuple[int, float]]] = defaultdict(list)
+        item_to_columns: dict[int, list[tuple[int, float]]] = defaultdict(list)
         for idx, (col, val) in enumerate(zip(columns, column_values)):
             if val < 1e-9:
                 continue
@@ -153,7 +152,7 @@ class RyanFosterBranching(BranchingStrategy):
         candidates = []
         for pair, together in pair_together.items():
             apart = pair_apart.get(pair, 0.0)
-            total = together + apart
+            together + apart
 
             # Skip if no fractional overlap
             if together < self.config.min_pair_value:
@@ -237,7 +236,7 @@ class RyanFosterBranching(BranchingStrategy):
         self,
         node,  # BPNode
         columns,  # List[Column]
-        column_values: List[float],
+        column_values: list[float],
     ) -> bool:
         """
         Check if Ryan-Foster can be applied.

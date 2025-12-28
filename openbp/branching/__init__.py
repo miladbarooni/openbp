@@ -17,14 +17,14 @@ Users can implement custom branching by subclassing BranchingStrategy
 and implementing the select_branching_candidates() method.
 """
 
-from openbp.branching.base import (
-    BranchingStrategy,
-    BranchingCandidate,
-)
-from openbp.branching.variable import VariableBranching
-from openbp.branching.ryan_foster import RyanFosterBranching
 from openbp.branching.arc import ArcBranching
+from openbp.branching.base import (
+    BranchingCandidate,
+    BranchingStrategy,
+)
+from openbp.branching.ryan_foster import RyanFosterBranching
 from openbp.branching.strong import StrongBranching
+from openbp.branching.variable import VariableBranching
 
 __all__ = [
     "BranchingStrategy",

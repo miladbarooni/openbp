@@ -9,10 +9,10 @@ This module provides the main BranchAndPrice solver that coordinates:
 """
 
 from openbp.solver.branch_and_price import (
-    BranchAndPrice,
     BPConfig,
     BPSolution,
     BPStatus,
+    BranchAndPrice,
 )
 
 __all__ = [

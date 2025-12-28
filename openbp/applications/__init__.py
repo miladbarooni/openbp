@@ -12,25 +12,25 @@ Available Applications:
 - Set Partitioning: Generic set partitioning solver
 """
 
-from openbp.applications.cutting_stock import (
-    solve_cutting_stock_bp,
-    CuttingStockBPConfig,
-)
-from openbp.applications.vrptw import (
-    solve_vrptw_bp,
-    VRPTWBPConfig,
-)
-from openbp.applications.vrptw_bpc import (
-    solve_vrptw_bpc,
-    VRPTWBPCConfig,
-)
 from openbp.applications.crew_pairing import (
-    solve_crew_pairing_bp,
     CrewPairingBPConfig,
+    solve_crew_pairing_bp,
+)
+from openbp.applications.cutting_stock import (
+    CuttingStockBPConfig,
+    solve_cutting_stock_bp,
 )
 from openbp.applications.set_partitioning import (
-    solve_set_partitioning,
     SetPartitioningConfig,
+    solve_set_partitioning,
+)
+from openbp.applications.vrptw import (
+    VRPTWBPConfig,
+    solve_vrptw_bp,
+)
+from openbp.applications.vrptw_bpc import (
+    VRPTWBPCConfig,
+    solve_vrptw_bpc,
 )
 
 __all__ = [

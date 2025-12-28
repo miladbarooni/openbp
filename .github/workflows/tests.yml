@@ -100,7 +100,7 @@ jobs:
 
     - name: Check code formatting with ruff
       run: |
-        ruff check openbp/ --select=E,F,I,N,W,UP
+        ruff check openbp/
 
     - name: Check code formatting with black
       run: |

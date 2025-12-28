@@ -4,9 +4,9 @@ Pure Python implementation of node selection policies.
 This is a fallback when the C++ module is not available.
 """
 
-from abc import ABC, abstractmethod
-from typing import List, Optional
 import heapq
+from abc import ABC, abstractmethod
+from typing import Optional
 
 from openbp.core.node import BPNode
 
@@ -19,7 +19,7 @@ class NodeSelector(ABC):
         """Add a node to the open queue."""
         pass
 
-    def add_nodes(self, nodes: List[BPNode]) -> None:
+    def add_nodes(self, nodes: list[BPNode]) -> None:
         """Add multiple nodes to the open queue."""
         for node in nodes:
             self.add_node(node)
@@ -59,7 +59,7 @@ class NodeSelector(ABC):
         pass
 
     @abstractmethod
-    def get_open_node_ids(self) -> List[int]:
+    def get_open_node_ids(self) -> list[int]:
         """Get all open node IDs."""
         pass
 
@@ -73,7 +73,7 @@ class BestFirstSelector(NodeSelector):
     """Best-first (best-bound) node selection."""
 
     def __init__(self):
-        self._heap: List[tuple] = []  # (bound, id, node)
+        self._heap: list[tuple] = []  # (bound, id, node)
         self._counter = 0
 
     def add_node(self, node: BPNode) -> None:
@@ -114,7 +114,7 @@ class BestFirstSelector(NodeSelector):
             return float("inf")
         return self._heap[0][0]
 
-    def get_open_node_ids(self) -> List[int]:
+    def get_open_node_ids(self) -> list[int]:
         return [n.id for _, _, n in self._heap]
 
     def clear(self) -> None:
@@ -125,7 +125,7 @@ class DepthFirstSelector(NodeSelector):
     """Depth-first node selection."""
 
     def __init__(self):
-        self._heap: List[tuple] = []  # (-depth, bound, id, node)
+        self._heap: list[tuple] = []  # (-depth, bound, id, node)
         self._counter = 0
 
     def add_node(self, node: BPNode) -> None:
@@ -166,7 +166,7 @@ class DepthFirstSelector(NodeSelector):
             return float("inf")
         return min(b for _, b, _, _ in self._heap)
 
-    def get_open_node_ids(self) -> List[int]:
+    def get_open_node_ids(self) -> list[int]:
         return [n.id for _, _, _, n in self._heap]
 
     def clear(self) -> None:
@@ -177,7 +177,7 @@ class BestEstimateSelector(NodeSelector):
     """Best-estimate node selection."""
 
     def __init__(self, estimate_weight: float = 0.5):
-        self._nodes: List[BPNode] = []
+        self._nodes: list[BPNode] = []
         self._estimate_weight = estimate_weight
         self._global_upper = float("inf")
         self._max_depth = 1
@@ -228,7 +228,7 @@ class BestEstimateSelector(NodeSelector):
             return float("inf")
         return min(n.lower_bound for n in self._nodes)
 
-    def get_open_node_ids(self) -> List[int]:
+    def get_open_node_ids(self) -> list[int]:
         return [n.id for n in self._nodes]
 
     def clear(self) -> None:
@@ -291,7 +291,7 @@ class HybridSelector(NodeSelector):
     def best_bound(self) -> float:
         return self._best_first.best_bound()
 
-    def get_open_node_ids(self) -> List[int]:
+    def get_open_node_ids(self) -> list[int]:
         return self._best_first.get_open_node_ids()
 
     def clear(self) -> None:

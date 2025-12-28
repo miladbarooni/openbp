@@ -17,16 +17,15 @@ We track bounds on specific patterns (identified by their dict representation)
 rather than column indices, since column indices change at each node.
 """
 
-from dataclasses import dataclass, field
-from typing import Optional, List, Any, Dict, Tuple
-import time
 import math
+import time
+from dataclasses import dataclass, field
+from typing import Any, Optional
 
 from openbp.solver import BPSolution, BPStatus
-from openbp._core import BPTree, BPNode, NodeStatus, BranchingDecision, BestFirstSelector
 
 
-def _pattern_key(pattern: Dict[int, int]) -> Tuple[Tuple[int, int], ...]:
+def _pattern_key(pattern: dict[int, int]) -> tuple[tuple[int, int], ...]:
     """Convert a pattern dict to a hashable tuple for tracking."""
     return tuple(sorted(pattern.items()))
 
@@ -54,7 +53,7 @@ class _NodeData:
     """Data associated with each B&P node for cutting stock."""
     # Pattern bounds: pattern_key -> (lower_bound, upper_bound)
     # These are accumulated from the path to root
-    pattern_bounds: Dict[Tuple[Tuple[int, int], ...], Tuple[int, int]] = field(default_factory=dict)
+    pattern_bounds: dict[tuple[tuple[int, int], ...], tuple[int, int]] = field(default_factory=dict)
 
 
 def solve_cutting_stock_bp(
@@ -92,13 +91,13 @@ def solve_cutting_stock_bp(
     # Import OpenCG components
     try:
         from opencg.applications.cutting_stock import (
-            create_cutting_stock_problem,
             CuttingStockMaster,
             CuttingStockPricing,
             _generate_ffd_patterns,
+            create_cutting_stock_problem,
         )
-        from opencg.pricing import PricingConfig
         from opencg.core.column import Column
+        from opencg.pricing import PricingConfig
     except ImportError as e:
         raise ImportError(
             "OpenCG is required. Install with: pip install -e ../opencg"
@@ -122,13 +121,13 @@ def solve_cutting_stock_bp(
 
     # Track best solution
     best_objective = float('inf')
-    best_columns: List[Any] = []
-    best_values: List[float] = []
+    best_columns: list[Any] = []
+    best_values: list[float] = []
     global_lower_bound = float(l2_bound)
 
     # Node queue: list of (lower_bound, node_id, depth, pattern_bounds)
     # Using a simple list with best-first selection
-    node_queue: List[Tuple[float, int, int, Dict]] = []
+    node_queue: list[tuple[float, int, int, dict]] = []
     next_node_id = 0
 
     # Add root node
@@ -136,7 +135,7 @@ def solve_cutting_stock_bp(
     next_node_id += 1
 
     if config.verbose:
-        print(f"Cutting Stock B&P Solver")
+        print("Cutting Stock B&P Solver")
         print(f"  Items: {instance.num_items}")
         print(f"  Roll width: {instance.roll_width}")
         print(f"  L2 bound: {l2_bound}")
@@ -286,7 +285,7 @@ def solve_cutting_stock_bp(
 
     if config.verbose:
         print()
-        print(f"B&P Complete:")
+        print("B&P Complete:")
         print(f"  Status: {status.name}")
         print(f"  Objective: {best_objective}")
         print(f"  Nodes: {nodes_explored}")
@@ -298,10 +297,10 @@ def solve_cutting_stock_bp(
 def _solve_cg_with_bounds(
     instance,
     problem,
-    pattern_bounds: Dict[Tuple[Tuple[int, int], ...], Tuple[int, int]],
+    pattern_bounds: dict[tuple[tuple[int, int], ...], tuple[int, int]],
     max_iterations: int,
     verbose: bool,
-) -> Optional[Tuple[float, List[Any], List[float], List[Dict[int, int]]]]:
+) -> Optional[tuple[float, list[Any], list[float], list[dict[int, int]]]]:
     """
     Solve column generation at a B&P node with pattern bounds.
 
@@ -325,8 +324,8 @@ def _solve_cg_with_bounds(
         CuttingStockPricing,
         _generate_ffd_patterns,
     )
-    from opencg.pricing import PricingConfig
     from opencg.core.column import Column
+    from opencg.pricing import PricingConfig
 
     # Create HiGHS model directly so we can control bounds
     highs = highspy.Highs()
@@ -343,10 +342,10 @@ def _solve_cg_with_bounds(
         )
 
     # Track columns: list of (pattern, solver_idx)
-    columns_info: List[Tuple[Dict[int, int], int]] = []
+    columns_info: list[tuple[dict[int, int], int]] = []
     next_col_id = 0
 
-    def add_pattern_to_model(pattern: Dict[int, int]) -> int:
+    def add_pattern_to_model(pattern: dict[int, int]) -> int:
         """Add a pattern to the HiGHS model with appropriate bounds."""
         nonlocal next_col_id
 

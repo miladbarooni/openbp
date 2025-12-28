@@ -9,48 +9,48 @@ __version__ = "0.1.0"
 
 # Core classes from C++ backend
 from openbp._core import (
+    # Backend info
+    HAS_CPP_BACKEND,
+    BestEstimateSelector,
+    BestFirstSelector,
     # Node and tree
     BPNode,
     BPTree,
-    TreeStats,
-    NodeStatus,
-    BranchType,
     BranchingDecision,
+    BranchType,
+    DepthFirstSelector,
+    HybridSelector,
     # Selection policies
     NodeSelector,
-    BestFirstSelector,
-    DepthFirstSelector,
-    BestEstimateSelector,
-    HybridSelector,
+    NodeStatus,
+    TreeStats,
     create_selector,
-    # Backend info
-    HAS_CPP_BACKEND,
 )
 
 # Python branching strategies
 from openbp.branching import (
-    BranchingStrategy,
-    BranchingCandidate,
-    VariableBranching,
-    RyanFosterBranching,
     ArcBranching,
+    BranchingCandidate,
+    BranchingStrategy,
+    RyanFosterBranching,
     StrongBranching,
-)
-
-# Solver
-from openbp.solver import (
-    BranchAndPrice,
-    BPConfig,
-    BPSolution,
-    BPStatus,
+    VariableBranching,
 )
 
 # Selection (Python wrappers for convenience)
 from openbp.selection import (
+    BestEstimateSelection,
     BestFirstSelection,
     DepthFirstSelection,
-    BestEstimateSelection,
     HybridSelection,
+)
+
+# Solver
+from openbp.solver import (
+    BPConfig,
+    BPSolution,
+    BPStatus,
+    BranchAndPrice,
 )
 
 __all__ = [

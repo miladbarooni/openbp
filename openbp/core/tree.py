@@ -4,9 +4,8 @@ Pure Python implementation of B&P tree.
 This is a fallback when the C++ module is not available.
 """
 
-from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Callable
-import math
+from dataclasses import dataclass
+from typing import Callable, Optional
 
 from openbp.core.node import BPNode, BranchingDecision, NodeStatus
 
@@ -45,7 +44,7 @@ class BPTree:
             minimize: True for minimization, False for maximization
         """
         self._minimize = minimize
-        self._nodes: Dict[int, BPNode] = {}
+        self._nodes: dict[int, BPNode] = {}
         self._next_id = 0
         self._global_lower_bound = float("-inf")
         self._global_upper_bound = float("inf")
@@ -111,8 +110,8 @@ class BPTree:
     def create_children(
         self,
         parent: BPNode,
-        decisions: List[BranchingDecision],
-    ) -> List[BPNode]:
+        decisions: list[BranchingDecision],
+    ) -> list[BPNode]:
         """Create multiple children."""
         children = [self.create_child(parent, d) for d in decisions]
 
@@ -173,7 +172,7 @@ class BPTree:
 
         return improved
 
-    def compute_lower_bound(self, open_node_ids: List[int]) -> float:
+    def compute_lower_bound(self, open_node_ids: list[int]) -> float:
         """Compute lower bound from open nodes."""
         lb = self._global_upper_bound
         for node_id in open_node_ids:
@@ -192,7 +191,7 @@ class BPTree:
                 pruned += 1
         return pruned
 
-    def get_open_nodes(self) -> List[int]:
+    def get_open_nodes(self) -> list[int]:
         """Get IDs of all open nodes."""
         return [n.id for n in self._nodes.values() if n.can_be_explored]
 
@@ -225,7 +224,7 @@ class BPTree:
             self._global_upper_bound = node.lp_value
             self._stats.best_upper_bound = self._global_upper_bound
 
-    def get_path_to_root(self, target_id: int) -> List[int]:
+    def get_path_to_root(self, target_id: int) -> list[int]:
         """Get node IDs from root to target."""
         path = []
         current = target_id
