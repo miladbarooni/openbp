@@ -33,12 +33,12 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
-        sudo apt-get install -y cmake build-essential
+        sudo apt-get install -y cmake build-essential libboost-dev
 
     - name: Install system dependencies (macOS)
       if: runner.os == 'macOS'
       run: |
-        brew install cmake
+        brew install cmake boost
 
     - name: Cache pip packages
       uses: actions/cache@v4
