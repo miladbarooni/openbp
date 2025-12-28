@@ -1,0 +1,8 @@
+{
+  "source_dir": "/Users/milad/Programming/optimization-suite/openbp",
+  "build_dir": "/Users/milad/Programming/optimization-suite/openbp/build/cp311-cp311-macosx_15_0_arm64",
+  "cmake_path": "/Users/milad/miniconda3/envs/openbp/bin/cmake",
+  "skbuild_path": "/private/var/folders/qf/1dp4n1xs0bdfbn5vb_74zb_m0000gn/T/pip-build-env-r5mwunqi/overlay/lib/python3.11/site-packages/scikit_build_core",
+  "skbuild_version": "0.11.6",
+  "python_executable": "/Users/milad/miniconda3/envs/openbp/bin/python3.11"
+}

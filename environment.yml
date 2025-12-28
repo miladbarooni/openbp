@@ -1,0 +1,43 @@
+# Conda environment for OpenBP development
+#
+# IMPORTANT: The 'opencg' package on PyPI is NOT our project!
+# You must install OpenCG from https://github.com/miladbarooni/opencg
+#
+# Installation steps:
+#   1. conda env create -f environment.yml
+#   2. conda activate openbp
+#   3. pip install -e ../opencg  (install local OpenCG first)
+#   4. pip install -e .  (install OpenBP)
+#
+# Or use the combined setup command:
+#   conda env create -f environment.yml && conda activate openbp && pip install -e ../opencg && pip install -e .
+
+name: openbp
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  # Python
+  - python=3.11
+
+  # Build system
+  - cmake>=3.15
+  - pybind11>=2.11
+  - scikit-build-core>=0.5
+  - ninja  # Build tool
+
+  # Runtime dependencies
+  - numpy>=1.20
+
+  # Testing
+  - pytest>=7.0
+  - pytest-cov>=4.0
+
+  # Type checking and linting
+  - mypy>=1.0
+
+  # pip dependencies
+  - pip
+  - pip:
+    - ruff>=0.1.0
+    - highspy>=1.5  # HiGHS LP solver (required by OpenCG)
