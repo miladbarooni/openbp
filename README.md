@@ -11,8 +11,7 @@ A research-grade, extensible framework for solving optimization problems using *
 ## 🚀 Quick Links
 
 - **[Quick Start](QUICKSTART.md)** - Get started in 20 minutes
-- **[Documentation](docs/)** - Comprehensive guides
-- **[Examples](examples/)** - Jupyter notebooks and scripts
+- **[Examples](examples/notebooks/)** - Jupyter notebooks
 - **[OpenCG](https://github.com/miladbarooni/opencg)** - Required dependency
 
 ---
@@ -240,26 +239,15 @@ This seamless integration is why OpenBP can be so flexible!
 
 ## 📚 Documentation
 
-### For Users
-- **[Quick Start Guide](QUICKSTART.md)** - 20-minute tutorial
-- **[User Guide](docs/user_guide.md)** - Comprehensive how-to
-- **[When to Use B&P](docs/when_to_use.md)** - Decision guide
-- **[Performance Tips](docs/performance.md)** - Optimization strategies
-
-### For Developers
-- **[Architecture](docs/architecture.md)** - System design
-- **[API Reference](docs/api/)** - All classes and methods
-- **[Custom Branching](docs/custom_branching.md)** - Implement your own
-- **[Contributing](CONTRIBUTING.md)** - How to contribute
+### Getting Started
+- **[Quick Start Guide](QUICKSTART.md)** - 20-minute tutorial with examples
+- **[OpenCG Documentation](https://github.com/miladbarooni/opencg)** - Required dependency
 
 ### Examples
-- **[Jupyter Notebooks](examples/notebooks/)**
-  - 01_vehicle_routing_bp.ipynb
-  - 02_crew_rostering_bp.ipynb
-  - 03_custom_branching.ipynb
-- **[Python Scripts](examples/)**
-  - crew_rostering.py
-  - multi_commodity_flow.py
+- **[Jupyter Notebooks](examples/notebooks/)** - Interactive tutorials
+  - Vehicle routing with Branch-and-Price
+  - Crew scheduling examples
+  - Custom branching strategies
 
 ---
 
@@ -294,7 +282,7 @@ If you use OpenBP in your research, please cite:
 
 ## 🤝 Contributing
 
-We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+We welcome contributions!
 
 ### Ways to Contribute
 - 🐛 Report bugs via [Issues](https://github.com/miladbarooni/openbp/issues)
@@ -403,7 +391,6 @@ This means you can:
 
 ## 💬 Get Help
 
-- **Documentation**: https://openbp.readthedocs.io
 - **Issues**: https://github.com/miladbarooni/openbp/issues
 - **Discussions**: https://github.com/miladbarooni/openbp/discussions
 - **OpenCG Help**: https://github.com/miladbarooni/opencg/discussions
@@ -420,4 +407,4 @@ If OpenBP helps your research or project, please ⭐ star the repository!
 
 **Made with ❤️ for the Operations Research community**
 
-[Get Started →](QUICKSTART.md) | [Documentation →](docs/) | [Examples →](examples/)
+[Get Started →](QUICKSTART.md) | [Examples →](examples/notebooks/)
