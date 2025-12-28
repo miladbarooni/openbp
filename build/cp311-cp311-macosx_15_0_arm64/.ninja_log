@@ -1,9 +1,0 @@
-# ninja log v7
-6	3769	1766819748959726513	CMakeFiles/_core.dir/src/bindings/module.cpp.o	a5bfac2af5176028
-7	5607	1766819748960553179	CMakeFiles/_core.dir/src/bindings/tree_bindings.cpp.o	318fb0a63a1781f
-7	6063	1766819748960209930	CMakeFiles/_core.dir/src/bindings/node_bindings.cpp.o	7f049595348faae5
-7	3992	1766819780481030007	CMakeFiles/_core.dir/src/bindings/module.cpp.o	a5bfac2af5176028
-8	6166	1766819780481939756	CMakeFiles/_core.dir/src/bindings/selection_bindings.cpp.o	5c52b97b92eaefb3
-8	6310	1766819780481754423	CMakeFiles/_core.dir/src/bindings/tree_bindings.cpp.o	318fb0a63a1781f
-7	6742	1766819780481537506	CMakeFiles/_core.dir/src/bindings/node_bindings.cpp.o	7f049595348faae5
-6742	9301	1766819787216669582	_core.cpython-311-darwin.so	5c36d39210257dad

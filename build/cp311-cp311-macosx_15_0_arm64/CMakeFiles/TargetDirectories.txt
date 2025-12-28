@@ -1,7 +1,0 @@
-/Users/milad/Programming/optimization-suite/openbp/build/cp311-cp311-macosx_15_0_arm64/CMakeFiles/_core.dir
-/Users/milad/Programming/optimization-suite/openbp/build/cp311-cp311-macosx_15_0_arm64/CMakeFiles/edit_cache.dir
-/Users/milad/Programming/optimization-suite/openbp/build/cp311-cp311-macosx_15_0_arm64/CMakeFiles/rebuild_cache.dir
-/Users/milad/Programming/optimization-suite/openbp/build/cp311-cp311-macosx_15_0_arm64/CMakeFiles/list_install_components.dir
-/Users/milad/Programming/optimization-suite/openbp/build/cp311-cp311-macosx_15_0_arm64/CMakeFiles/install.dir
-/Users/milad/Programming/optimization-suite/openbp/build/cp311-cp311-macosx_15_0_arm64/CMakeFiles/install/local.dir
-/Users/milad/Programming/optimization-suite/openbp/build/cp311-cp311-macosx_15_0_arm64/CMakeFiles/install/strip.dir
