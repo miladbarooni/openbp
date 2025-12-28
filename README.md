@@ -233,6 +233,20 @@ OpenBP works with any problem that OpenCG can model:
 
 ---
 
+## Comparison with Other Frameworks
+
+| Framework | Language | Open Source | Extensible | Performance | Learning Curve |
+|-----------|----------|-------------|------------|-------------|----------------|
+| **OpenBP** | Python+C++ | ✅ MIT | ✅✅✅ High | ✅✅ Good | ✅✅ Medium |
+| **OpenCG** | Python+C++ | ✅ MIT | ✅✅✅ High | ✅✅✅ Excellent | ✅✅✅ Low |
+| BaPCod | C++ | ❌ Commercial | ⚠️ Limited | ✅✅✅ Excellent | ❌ High |
+| VRPSolver | C++ | ⚠️ Academic | ⚠️ Limited | ✅✅✅ Excellent | ❌ Very High |
+| SCIP | C | ✅ ZIB | ✅ Medium | ✅✅✅ Excellent | ❌ Very High |
+
+**OpenBP's Advantage**: Best balance of performance, flexibility, and ease of use for researchers.
+
+---
+
 ## Research & Citations
 
 If you use OpenBP in your research, please cite:
